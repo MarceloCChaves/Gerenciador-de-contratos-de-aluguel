@@ -1,8 +1,12 @@
-import { MenuIcon, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
+import ToggleSection from '../../components/toggleSection/ToggleSection';
+import Input from '../../components/Input/Input';
+import Navbar from '../../components/navbar/Navbar';
+import Checkbox from '../../components/checkbox/Checkbox';
+import Header from '../../components/Header/Header';
 
 export default function EditorPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -74,7 +78,7 @@ export default function EditorPage() {
         for (let i = 1; i <= totalPages; i++) {
           pdf.setPage(i);
           pdf.setFontSize(10);
-          pdf.text(`Fls. ${i}`, pdf.internal.pageSize.getWidth() - 30, 15);
+          pdf.text(`${i}`, pdf.internal.pageSize.getWidth() - 30, 15);
         }
       })
       .save();
@@ -82,336 +86,218 @@ export default function EditorPage() {
 
   return (
     <div className="flex">
-      <div className={`bg-gray-800 text-white p-4 transition-all duration-300 fixed h-full overflow-auto ${sidebarOpen ? 'w-80' : 'w-20'}`}>
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="mb-4 bg-gray-600 hover:bg-gray-500 px-2 py-1 rounded cursor-pointer"
+      <Navbar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      >
+        <div className="space-y-2 mb-4">
+          <Checkbox label="fianca" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
+          <Checkbox label="caucao" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
+          <Checkbox label="personalizado" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
+        </div>
+
+        {/* Tooltip Imóvel */}
+        <ToggleSection
+          label="Informações do imóvel"
+          show={showImovelInfo}
+          setShow={setShowImovelInfo}
         >
-          {sidebarOpen ? <X /> : <MenuIcon />}
-        </button>
-        {sidebarOpen && (
-          <nav>
-            <ul className="space-y-4">
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="fianca"
-                    checked={tipoGarantia === "fianca"}
-                    onChange={() => setTipoGarantia(tipoGarantia === "fianca" ? "" : "fianca")}
-                    className="w-4 h-4 mr-2  rounded focus:ring-2 focus:ring-blue-500 transition"
-                  />
-                  <label htmlFor="fianca" className="text-white text-sm">Fiança</label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="caucao"
-                    checked={tipoGarantia === "caucao"}
-                    onChange={() => setTipoGarantia(tipoGarantia === "caucao" ? "" : "caucao")}
-                    className="w-4 h-4 mr-2  rounded focus:ring-2 focus:ring-blue-500 transition"
-                  />
-                  <label htmlFor="caucao" className="text-white text-sm">Caução</label>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="personalizado"
-                    checked={tipoGarantia === "personalizado"}
-                    onChange={() => setTipoGarantia(tipoGarantia === "personalizado" ? "" : "personalizado")}
-                    className="w-4 h-4 mr-2  rounded focus:ring-2 focus:ring-blue-500 transition"
-                  />
-                  <label htmlFor="personalizado" className="text-white text-sm">Personalizado</label>
-                </div>
-              </div>
-              {/* Campo comum: Endereço */}
+          <div className="space-y-2">
+            <Input
+              type='text'
+              label="Endereço do Imóvel"
+              value={endereco}
+              onChange={(e) => setEndereco(e.target.value)}
+            />
+            <Input
+              type='text'
+              label="Prazo (em meses)"
+              value={prazoImovel}
+              onChange={(e) => setPrazoImovel(e.target.value)}
+            />
+            <Input
+              type='text'
+              label="Renda Mensal"
+              value={rendaMensal}
+              onChange={(e) => setRendaMensal(e.target.value)}
+            />
+            <Input
+              type='text'
+              label="Renda Anual"
+              value={rendaAnual}
+              onChange={(e) => setRendaAnual(e.target.value)}
+            />
+
+            <div className="grid grid-cols-3 gap-2">
+              <Input
+                type='text'
+                label="Dia Inicial"
+                value={diaImovelInicial}
+                onChange={(e) => setDiaImovelInicial(e.target.value)}
+              />
+              <Input
+                type='text'
+                label="Mês Inicial"
+                value={mesImovelInicial}
+                onChange={(e) => setMesImovelInicial(e.target.value)}
+              />
+              <Input
+                type='text'
+                label="Ano Inicial"
+                value={anoImovelInicial}
+                onChange={(e) => setAnoImovelInicial(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              <Input
+                type='text'
+                label="Dia Final"
+                value={diaImovelFinal}
+                onChange={(e) => setDiaImovelFinal(e.target.value)}
+              />
+              <Input
+                type='text'
+                label="Mês Final"
+                value={mesImovelFinal}
+                onChange={(e) => setMesImovelFinal(e.target.value)}
+              />
+              <Input
+                type='text'
+                label="Ano Final"
+                value={anoImovelFinal}
+                onChange={(e) => setAnoImovelFinal(e.target.value)}
+              />
+            </div>
+
+            {tipoGarantia === "caucao" && (
+              <Input
+                type='text'
+                label="Valor garantia"
+                value={valorGarantia}
+                onChange={(e) => setValorGarantia(e.target.value)}
+              />
+            )}
+
+            {tipoGarantia === "personalizado" && (
               <div>
-                <button
-                  onClick={() => setShowImovelInfo(!showImovelInfo)}
-                  className="mt-2 mb-1 text-left w-full text-sm text-blue-400 hover:underline cursor-pointer"
-                >
-                  {showImovelInfo ? 'Ocultar' : 'Mostrar'} Informações do imóvel
-                </button>
-                {showImovelInfo && (
-                  <div className='space-y-2'>
-                    <div>
-                      <label className="block text-sm text-white">Endereço do Imóvel:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={endereco}
-                        onChange={(e) => setEndereco(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Prazo (em meses):</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={prazoImovel}
-                        onChange={(e) => setPrazoImovel(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Renda Mensal:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={rendaMensal}
-                        onChange={(e) => setRendaMensal(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Renda Anual:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={rendaAnual}
-                        onChange={(e) => setRendaAnual(e.target.value)}
-                      />
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div>
-                        <label className="block text-sm text-white">Dia Inicial:</label>
-                        <input
-                          type="text"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={diaImovelInicial}
-                          onChange={(e) => setDiaImovelInicial(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-white">Mês Inicial:</label>
-                        <input
-                          type="text"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={mesImovelInicial}
-                          onChange={(e) => setMesImovelInicial(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-white">Ano Inicial:</label>
-                        <input
-                          type="text"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={anoImovelInicial}
-                          onChange={(e) => setAnoImovelInicial(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div>
-                        <label className="block text-sm text-white">Dia Final:</label>
-                        <input
-                          type="text"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={diaImovelFinal}
-                          onChange={(e) => setDiaImovelFinal(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-white">Mês Final:</label>
-                        <input
-                          type="text"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={mesImovelFinal}
-                          onChange={(e) => setMesImovelFinal(e.target.value)}
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm text-white">Ano Final:</label>
-                        <input
-                          type="text"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={anoImovelFinal}
-                          onChange={(e) => setAnoImovelFinal(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    {tipoGarantia === "caucao" ?
-                      <div>
-                        <label className="block text-sm text-white">Valor garantia:</label>
-                        <input
-                          type="text"
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={valorGarantia}
-                          onChange={(e) => setValorGarantia(e.target.value)}
-                        />
-                      </div> : <></>}
-                    {tipoGarantia === "personalizado" ?
-                      <div>
-                        <label className="block text-sm text-white">Texto personalizado:</label>
-                        <textarea
-                          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                          value={textoPersonalizado}
-                          onChange={(e) => setTextoPersonalizado(e.target.value)}
-                        >{textoPersonalizado}</textarea>
-                      </div> : <></>}
-                  </div>
-                )}
+                <label className="block text-sm text-white">Texto personalizado:</label>
+                <textarea
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                  value={textoPersonalizado}
+                  onChange={(e) => setTextoPersonalizado(e.target.value)}
+                />
               </div>
+            )}
+          </div>
+        </ToggleSection>
 
 
-              {/* Tooltip Locador */}
-              <div>
-                <button
-                  onClick={() => setShowLocadorInfo(!showLocadorInfo)}
-                  className="mt-2 mb-1 text-left w-full text-sm text-blue-400 hover:underline cursor-pointer"
-                >
-                  {showLocadorInfo ? 'Ocultar' : 'Mostrar'} Informações do Locador
-                </button>
-                {showLocadorInfo && (
-                  <div className="space-y-2">
-                    <div>
-                      <label className="block text-sm text-white">Locador:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={locador}
-                        onChange={(e) => setLocador(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Estado civil:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={estadoCivilLocador}
-                        onChange={(e) => setEstadoCivilLocador(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Documentos:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={documentosLocador}
-                        onChange={(e) => setDocumentosLocador(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
 
-              {/* Tooltip Fiador*/}
-              <div>
-                <button
-                  onClick={() => setShowFiadorInfo(!showFiadorInfo)}
-                  className="mt-2 mb-1 text-left w-full text-sm text-blue-400 hover:underline cursor-pointer"
-                >
-                  {showLocadorInfo ? 'Ocultar' : 'Mostrar'} Informações do Fiador
-                </button>
-                {showFiadorInfo && (
-                  <div className="space-y-2">
-                    <div>
-                      <label className="block text-sm text-white">Fiador:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={nomeFiador}
-                        onChange={(e) => setNomeFiador(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
 
-              {/* Tooltip Locatário */}
-              <div>
-                <button
-                  onClick={() => setShowLocatarioInfo(!showLocatarioInfo)}
-                  className="mt-4 mb-1 text-left w-full text-sm text-blue-400 hover:underline cursor-pointer"
-                >
-                  {showLocatarioInfo ? 'Ocultar' : 'Mostrar'} Informações do Locatário
-                </button>
-                {showLocatarioInfo && (
-                  <div className="space-y-2">
-                    <div>
-                      <label className="block text-sm text-white">Nome:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={nomeLocatario}
-                        onChange={(e) => setNomeLocatario(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Estado civil:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={estadoCivilLocatario}
-                        onChange={(e) => setEstadoCivilLocatario(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Profissão:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={profissaoLocatario}
-                        onChange={(e) => setProfissaoLocatario(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-white">Documentos:</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={documentosLocatario}
-                        onChange={(e) => setDocumentosLocatario(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
+        {/* Tooltip Locador */}
+        <ToggleSection
+          label="Informações do Locador"
+          show={showLocadorInfo}
+          setShow={setShowLocadorInfo}
+        >
+          <div className="space-y-2">
+            <Input
+              type="text"
+              label="Locador"
+              value={locador}
+              onChange={(e) => setLocador(e.target.value)}
+            />
+            <Input
+              type="text"
+              label="Estado civil"
+              value={estadoCivilLocador}
+              onChange={(e) => setEstadoCivilLocador(e.target.value)}
+            />
+            <Input
+              type="text"
+              label="Documentos"
+              value={documentosLocador}
+              onChange={(e) => setDocumentosLocador(e.target.value)}
+            />
+          </div>
+        </ToggleSection>
 
-              <div>
-                <button
-                  type='button'
-                  className='mt-6 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer'
-                  onClick={handleDownloadPdf}
-                >
-                  Baixar contrato
-                </button>
-              </div>
+        {/* Tooltip Fiador*/}
+        <ToggleSection
+          label="Informações do Fiador"
+          show={showFiadorInfo}
+          setShow={setShowFiadorInfo}
+        >
+          <Input
+            type="text"
+            label="Fiador"
+            value={nomeFiador}
+            onChange={(e) => setNomeFiador(e.target.value)}
+          />
+        </ToggleSection>
 
-              {/* Botão Voltar */}
-              <li>
-                <Link to="/">
-                  <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer">
-                    Voltar ao Menu
-                  </button>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        )}
-      </div>
+        {/* Tooltip Locatário */}
+        <ToggleSection
+          label="Informações do Locatário"
+          show={showLocatarioInfo}
+          setShow={setShowLocatarioInfo}
+        >
+          <div className="space-y-2">
+            <div className="space-y-2">
+              <Input
+                type='text'
+                label="Nome"
+                value={nomeLocatario}
+                onChange={(e) => setNomeLocatario(e.target.value)}
+              />
+              <Input
+                type='text'
+                label="Estado civil"
+                value={estadoCivilLocatario}
+                onChange={(e) => setEstadoCivilLocatario(e.target.value)}
+              />
+              <Input
+                type='text'
+                label="Profissão"
+                value={profissaoLocatario}
+                onChange={(e) => setProfissaoLocatario(e.target.value)}
+              />
+              <Input
+                type='text'
+                label="Documentos"
+                value={documentosLocatario}
+                onChange={(e) => setDocumentosLocatario(e.target.value)}
+              />
+            </div>
+          </div>
+        </ToggleSection>
+
+
+        <div>
+          <button
+            type='button'
+            className='mt-6 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer'
+            onClick={handleDownloadPdf}
+          >
+            Baixar contrato
+          </button>
+        </div>
+
+        {/* Botão Voltar */}
+        <li>
+          <Link to="/">
+            <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer">
+              Voltar ao Menu
+            </button>
+          </Link>
+        </li>
+      </Navbar>
 
       <div className="flex-1 bg-gray-50">
         <div className="flex items-center justify-center bg-gray-200 py-10 px-4 min-h-screen">
           <div ref={downloadRef} className=" bg-white w-[794px] min-h-[1123px] p-25">
-            {/* Cabeçalho */}
-            <div className="flex justify-between text-3xl font-serif py-5">
-              <div className="text-left">
-                <p>Djalma Chaves</p>
-                <p>Advogado</p>
-              </div>
-              <div className="text-right text-3xl">
-                <p>Marcelo Chaves</p>
-                <p>Advogado</p>
-              </div>
-            </div>
-
-            {/* Título */}
-            <div className="text-center font-serif py-5">
-              <h1 className="text-xl font-bold">ESCRITÓRIO DE ADVOCACIA</h1>
-              <p className="mt-1">Rua Municipalidade, 985 – sala 1110</p>
-              <p className="mt-1">Tel: 991007732</p>
-              <p className="mt-1">Email - Advocaciachaves@yahoo.com.br</p>
-              <p className="mt-1">Belém - PA</p>
-            </div>
+            <Header/>
 
             {/* Conteúdo */}
             <div className="text-justify font-serif text-xl space-y-4">
@@ -538,8 +424,13 @@ export default function EditorPage() {
               <hr />
               <p className='break-inside-avoid py-5'>Locatário – {nomeLocatario}</p>
               <hr />
-              <p className='break-inside-avoid py-5'>Fiador – {nomeFiador}</p>
-              <hr />
+              {
+                tipoGarantia === "fianca" ?
+                  <div>
+                    <p className='break-inside-avoid py-5'>Fiador – {nomeFiador}</p>
+                    <hr />
+                  </div> : <></>
+              }
               <p className='break-inside-avoid py-5'>Testemunha</p>
               <hr />
             </div>
