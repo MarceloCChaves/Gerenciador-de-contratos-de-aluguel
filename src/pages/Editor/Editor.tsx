@@ -48,14 +48,35 @@ export default function EditorPage() {
     const element = downloadRef.current;
     if (!element) return;
 
+    const opt = {
+      margin: 10,
+      filename: 'Contrato.pdf',
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait',
+      }
+    };
+
     html2pdf()
-      .set({
-        margin: 0,
-        filename: 'Contrato.pdf',
-        html2canvas: { scale: 1 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      })
+      .set(opt)
       .from(element)
+      .toPdf()
+      .get('pdf')
+      .then((pdf: any) => {
+        const totalPages = pdf.internal.getNumberOfPages();
+
+        for (let i = 1; i <= totalPages; i++) {
+          pdf.setPage(i);
+          pdf.setFontSize(10);
+          pdf.text(`Fls. ${i}`, pdf.internal.pageSize.getWidth() - 30, 15);
+        }
+      })
       .save();
   };
 
@@ -370,87 +391,148 @@ export default function EditorPage() {
 
       <div className="flex-1 bg-gray-50">
         <div className="flex items-center justify-center bg-gray-200 py-10 px-4 min-h-screen">
-          <div ref={downloadRef} className="bg-white w-[794px] min-h-[1123px] px-10 py-10">
+          <div ref={downloadRef} className=" bg-white w-[794px] min-h-[1123px] p-25">
             {/* Cabeçalho */}
-            <div className="flex justify-between text-3xl font-serif mb-4">
+            <div className="flex justify-between text-3xl font-serif py-5">
               <div className="text-left">
                 <p>Djalma Chaves</p>
                 <p>Advogado</p>
-                <p>D-577 OAB-PA</p>
               </div>
               <div className="text-right text-3xl">
                 <p>Marcelo Chaves</p>
                 <p>Advogado</p>
-                <p>4901-OAB-PA</p>
               </div>
             </div>
 
             {/* Título */}
-            <div className="text-center font-serif mb-6">
+            <div className="text-center font-serif py-5">
               <h1 className="text-xl font-bold">ESCRITÓRIO DE ADVOCACIA</h1>
-              <h2 className="text-lg font-semibold">&</h2>
-              <h1 className="text-xl font-bold">IMÓVEIS</h1>
-              <p className="text-sm mt-1">Rua Municipalidade, 985 – sala 1110</p>
-              <p>Tel: 991007732</p>
+              <p className="mt-1">Rua Municipalidade, 985 – sala 1110</p>
+              <p className="mt-1">Tel: 991007732</p>
+              <p className="mt-1">Email - Advocaciachaves@yahoo.com.br</p>
+              <p className="mt-1">Belém - PA</p>
             </div>
 
             {/* Conteúdo */}
             <div className="text-justify font-serif text-xl space-y-4">
-              <p className='py-10'>
-                Instrumento particular de contrato de locação do imóvel sito nesta cidade na {endereco}, como abaixo se declara, realizado entre {locador}, brasileiro, {estadoCivilLocador}, Advogado, {documentosLocador}, residente e domiciliado nesta cidade, como locador e {nomeLocatario}, brasileira, {estadoCivilLocatario}, {profissaoLocatario}, {documentosLocatario}, como locatária.
+              <p className='py-10 indent-48'>
+                Instrumento particular de contrato de locação do imóvel sito nesta cidade na {endereco}, como abaixo se declara, realizado entre {locador}, brasileiro, {estadoCivilLocador}, Advogado, {documentosLocador}, residente e domiciliado nesta cidade, como locador e {nomeLocatario}, brasileira, {estadoCivilLocatario}, {profissaoLocatario}, {documentosLocatario}, como locatário.
               </p>
 
-              <p className='py-10 break-inside-avoid'>
+              <p className='py-10 break-inside-avoid indent-48'>
                 {locador}, brasileiro, {estadoCivilLocador}, advogado, {documentosLocador}, residente e domiciliado nesta cidade, como locador e {nomeLocatario}, brasileira, {estadoCivilLocatario}, professora, {documentosLocatario} como locatária, tem justos e contratados a locação do imóvel sito nesta cidade à {endereco}, mediante às cláusulas e condições que mutuamente se obrigam e aceitam:
               </p>
 
-              <p className='py-10 break-inside-avoid'><strong>1ª Prazo:</strong><br />O prazo justo e contratado da presente locação é de {prazoImovel} meses a começar no dia {diaImovelInicial} de {mesImovelInicial} de {anoImovelInicial} e terminar no dia {diaImovelFinal} de {mesImovelFinal} de {anoImovelFinal};</p>
-
-              <p className='py-10 break-inside-avoid'><strong>2ª Reajuste:</strong><br />A presente locação será reajustada de acordo com os índices emanados pelo Governo Federal, em períodos de {prazoImovel} meses;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>3ª Objeto:</strong><br />O Objeto da presente locação é imóvel situado nesta cidade à {endereco};</p>
-
-              <p className='py-10 break-inside-avoid'><strong>4ª Destinação:</strong><br />A locatário (a) utilizará o imóvel exclusivamente para fins residenciais, destino que não poderá ser alterado sem o consentimento expresso do locador, sendo vedado qualquer cessão, transferência ou sublocação ainda quando parcial, temporária, gratuita ou onerosa;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>5ª Devolução:</strong><br />Se o locatário (a) devolver o imóvel antes de transcorrido o prazo estipulado na cláusula 1ª (primeira), será responsável pelo pagamento da multa de 1 (um) mês de aluguel. Em qualquer condição deverá devolver o imóvel locado totalmente pintado nas cores branco gelo e cromo com tinta da marca coral, bem como as benfeitorias em perfeitas condições de asseio, conservação e habitabilidade, sendo responsável pela quitação das contas de energia elétrica e água;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>6ª Renda:</strong><br />Durante os {prazoImovel} meses o locatário (a) pagará a renda anual de R$ {rendaAnual} em parcelas mensais de R$ {rendaMensal}, observando-se o mencionado na cláusula 2ª (segunda) do presente contrato;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>7ª Lugar do Pagamento:</strong><br />As prestações mensais serão quitadas no Escritório de Advocacia, situado na Rua Municipalidade, 985, Ed. Mirai Office sala 1110, ou aonde o locador determinar, sempre nesta capital, até no máximo ao 5º (quinto) dia do mês subsequente ao vencido;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>8ª Multa:</strong><br />Os alugueis pagos fora do prazo estabelecido na cláusula anterior deste contrato serão acrescidos de 02% (dois por cento), a título de multa, acrescido de juros e correção;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>9ª Obras e melhoramentos:</strong><br />As benfeitorias ou acessões introduzidas de qualquer natureza aderirão automaticamente ao imóvel locado. O consentimento por escrito do locador, todavia, será imprescindível para realização de qualquer benfeitoria, a locatário renuncia desde logo, irrevogavelmente, a todo direito de indenização, compensação ou retenção, relativos aos valores despendidos;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>10ª Estado do Imóvel:</strong><br />O imóvel é entregue em estado perfeito de conservação, higiene e habitabilidade, com todas as instalações em perfeito funcionamento, tendo o locatário (a) realizado a devida inspeção, pelo que se obriga a assim manter, conservar e devolver, quando finda ou rescindida a locação, às suas custas os reparos que fizerem necessários, sendo locado com Box de alumínio e armário na cozinha;</p>
-
-              <p className='py-10 break-inside-avoid'><strong>11ª Obrigações do locatário:</strong><br />
-                O aluguel será inteiramente líquido respeitando-se a legislação sobre a renda, sendo de responsabilidade do locatário (a):<br />
-                a) Taxas de água e energia elétrica, ficando o locatário (a) com a obrigação de colocar em seu nome as respectivas contas junto à Celpa e Cosanpa, e posteriormente retornar ao nome anterior após a locação;<br />
-                b) O locatário é impedido de sublocar o imóvel;<br />
-                c) IPTU (Imposto Predial Territorial Urbano).
+              <p className='py-5 break-inside-avoid'><p>1ª Prazo:</p><br />
+                <p className='indent-48'>
+                  O prazo justo e contratado da presente locação é de {prazoImovel} meses a começar no dia {diaImovelInicial} de {mesImovelInicial} de {anoImovelInicial} e terminar no dia {diaImovelFinal} de {mesImovelFinal} de {anoImovelFinal}
+                </p>
               </p>
 
-              <p className='py-10 break-inside-avoid'><strong>12ª Visitas:</strong><br />Poderá o locador visitar o imóvel locado, avisando com antecedência para sugestões, reclamações ou vistoria;</p>
+              <p className='py-5 break-inside-avoid'><p>2ª Reajuste:</p><br />
+                <p className='indent-48'>
+                  A presente locação será reajustada de acordo com os índices emanados pelo Governo Federal, em períodos de {prazoImovel} meses;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>3ª Objeto:</p><br />
+                <p className='indent-48'>
+                  O Objeto da presente locação é imóvel situado nesta cidade à {endereco};
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>4ª Destinação:</p><br />
+                <p className='indent-48'>
+                  A locatário (a) utilizará o imóvel exclusivamente para fins residenciais, destino que não poderá ser alterado sem o consentimento expresso do locador, sendo vedado qualquer cessão, transferência ou sublocação ainda quando parcial, temporária, gratuita ou onerosa;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>5ª Devolução:</p><br />
+                <p className='indent-48'>
+                  Se o locatário (a) devolver o imóvel antes de transcorrido o prazo estipulado na cláusula 1ª (primeira), será responsável pelo pagamento da multa de 1 (um) mês de aluguel. Em qualquer condição deverá devolver o imóvel locado totalmente pintado nas cores branco gelo e cromo com tinta da marca coral, bem como as benfeitorias em perfeitas condições de asseio, conservação e habitabilidade, sendo responsável pela quitação das contas de energia elétrica e água;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>6ª Renda:</p><br />
+                <p className='indent-48'>
+                  Durante os {prazoImovel} meses o locatário (a) pagará a renda anual de R$ {rendaAnual} em parcelas mensais de R$ {rendaMensal}, observando-se o mencionado na cláusula 2ª (segunda) do presente contrato;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>7ª Lugar do Pagamento:</p><br />
+                <p className='indent-48'>
+                  As prestações mensais serão quitadas no Escritório de Advocacia, situado na Rua Municipalidade, 985, Ed. Mirai Office sala 1110, ou aonde o locador determinar, sempre nesta capital, até no máximo ao 5º (quinto) dia do mês subsequente ao vencido;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>8ª Multa:</p><br />
+                <p className='indent-48'>
+                  Os alugueis pagos fora do prazo estabelecido na cláusula anterior deste contrato serão acrescidos de 02% (dois por cento), a título de multa, acrescido de juros e correção;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>9ª Obras e melhoramentos:</p><br />
+                <p className='indent-48'>
+                  As benfeitorias ou acessões introduzidas de qualquer natureza aderirão automaticamente ao imóvel locado. O consentimento por escrito do locador, todavia, será imprescindível para realização de qualquer benfeitoria, a locatário renuncia desde logo, irrevogavelmente, a todo direito de indenização, compensação ou retenção, relativos aos valores despendidos;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>10ª Estado do Imóvel:</p><br />
+                <p className='indent-48'>
+                  O imóvel é entregue em estado perfeito de conservação, higiene e habitabilidade, com todas as instalações em perfeito funcionamento, tendo o locatário (a) realizado a devida inspeção, pelo que se obriga a assim manter, conservar e devolver, quando finda ou rescindida a locação, às suas custas os reparos que fizerem necessários, sendo locado com Box de alumínio e armário na cozinha;
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>11ª Obrigações do locatário:</p><br />
+                <p className='indent-48'>
+                  O aluguel será inteiramente líquido respeitando-se a legislação sobre a renda, sendo de responsabilidade do locatário (a):<br />
+                  a) Taxas de água e energia elétrica, ficando o locatário (a) com a obrigação de colocar em seu nome as respectivas contas junto à Celpa e Cosanpa, e posteriormente retornar ao nome anterior após a locação;<br />
+                  b) O locatário é impedido de sublocar o imóvel;<br />
+                  c) IPTU (Imposto Predial Territorial Urbano).
+                </p>
+              </p>
+
+              <p className='py-5 break-inside-avoid'><p>12ª Visitas:</p><br />
+                <p className='indent-48'>
+                  Poderá o locador visitar o imóvel locado, avisando com antecedência para sugestões, reclamações ou vistoria;
+                </p>
+              </p>
 
               {tipoGarantia === "fianca" && (
-                <p className='py-10 break-inside-avoid'><strong>13ª Garantia:</strong><br />Como garantia da locação, assume o Sr. {nomeFiador}, como fiador e principal pagador de todas as obrigações deste contrato;</p>
+                <p className='py-5 break-inside-avoid'>
+                  <p>13ª Garantia:</p><br />
+                  <p className='indent-48'>
+                    Como garantia da locação, assume o Sr. {nomeFiador}, como fiador e principal pagador de todas as obrigações deste contrato;
+                  </p>
+                </p>
               )}
 
               {tipoGarantia === "caucao" && (
-                <p className='py-10 break-inside-avoid'><strong>13ª Garantia:</strong><br />O locador oferece como garantia o valor de
-                  R$ {valorGarantia}, como caução, importância
-                  que ao final da locação será devolvida ao locador, estando quites
-                  todas as obrigações assumidas pela locatária no presente contrato.</p>
+                <p className='py-5 break-inside-avoid'>
+                  <p>13ª Garantia:</p><br />
+                  <p className='indent-48'>
+                    O locador oferece como garantia o valor de R$ {valorGarantia}, como caução, importância que ao final da locação será devolvida ao locador, estando quites todas as obrigações assumidas pela locatária no presente contrato.
+                  </p>
+                </p>
               )}
 
               {tipoGarantia === "personalizado" && (
-                <p className='py-10 break-inside-avoid'><strong>13ª Garantia:</strong><br />{textoPersonalizado}</p>
+                <p className='py-5 break-inside-avoid'>
+                  <p>13ª Garantia:</p><br />
+                  <p className='indent-48'>
+                    {textoPersonalizado}
+                  </p>
+                </p>
               )}
 
-              <p className='break-inside-avoid'><strong>14ª Foro:</strong><br />Será o Foro de Belém o competente para dirimir controvérsias judiciais decorrentes do presente contrato. E por estarem justos e contratados, firmam o presente instrumento na presença de duas testemunhas.</p>
+              <p className='py-5 break-inside-avoid'>
+                <p>14ª Foro:</p><br />
+                <p className='indent-48'>
+                  Será o Foro de Belém o competente para dirimir controvérsias judiciais decorrentes do presente contrato. E por estarem justos e contratados, firmam o presente instrumento na presença de duas testemunhas.
+                </p>
+              </p>
 
-              <p className='text-right break-inside-avoid py-20'>Belém, ___________ de __________________ de 2025</p>
+              <p className='text-right break-inside-avoid py-10'>Belém, ___________ de __________________ de 2025</p>
 
               <p className='break-inside-avoid py-5'>Locador – {locador}</p>
               <hr />
