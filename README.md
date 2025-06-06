@@ -42,4 +42,4 @@ npm run start (para rodar no electron.js)
 ```
 
 ## 🚧 Observação
-Este é um projeto ainda em construção, no momento ainda está na versão 1.0, futuramente o criador irá adicionar novas funcionalidades conforme a demanda.
+Este é um projeto ainda em construção, no momento ainda está na versão 1.1, futuramente o criador irá adicionar novas funcionalidades conforme a demanda.
