@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
 import ToggleSection from '../../components/toggleSection/ToggleSection';
@@ -7,6 +6,7 @@ import Input from '../../components/Input/Input';
 import Navbar from '../../components/navbar/Navbar';
 import Checkbox from '../../components/checkbox/Checkbox';
 import Header from '../../components/Header/Header';
+import { Building, Paperclip, PersonStanding, Wallet } from 'lucide-react';
 
 export default function EditorPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -90,15 +90,10 @@ export default function EditorPage() {
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       >
-        <div className="space-y-2 mb-4">
-          <Checkbox label="fianca" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
-          <Checkbox label="caucao" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
-          <Checkbox label="personalizado" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
-        </div>
-
         {/* Tooltip Imóvel */}
         <ToggleSection
-          label="Informações do imóvel"
+          icon={<Building />}
+          label="Imóvel"
           show={showImovelInfo}
           setShow={setShowImovelInfo}
         >
@@ -192,12 +187,10 @@ export default function EditorPage() {
           </div>
         </ToggleSection>
 
-
-
-
         {/* Tooltip Locador */}
         <ToggleSection
-          label="Informações do Locador"
+          icon={<Wallet />}
+          label="Locador"
           show={showLocadorInfo}
           setShow={setShowLocadorInfo}
         >
@@ -225,7 +218,8 @@ export default function EditorPage() {
 
         {/* Tooltip Fiador*/}
         <ToggleSection
-          label="Informações do Fiador"
+          icon={<PersonStanding />}
+          label="Fiador"
           show={showFiadorInfo}
           setShow={setShowFiadorInfo}
         >
@@ -239,7 +233,8 @@ export default function EditorPage() {
 
         {/* Tooltip Locatário */}
         <ToggleSection
-          label="Informações do Locatário"
+          icon={<Paperclip />}
+          label="Locatário"
           show={showLocatarioInfo}
           setShow={setShowLocatarioInfo}
         >
@@ -273,6 +268,11 @@ export default function EditorPage() {
           </div>
         </ToggleSection>
 
+        <div className="space-y-2 mb-4">
+          <Checkbox label="fianca" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
+          <Checkbox label="caucao" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
+          <Checkbox label="personalizado" tipoGarantia={tipoGarantia} setTipoGarantia={setTipoGarantia} />
+        </div>
 
         <div>
           <button
@@ -283,21 +283,12 @@ export default function EditorPage() {
             Baixar contrato
           </button>
         </div>
-
-        {/* Botão Voltar */}
-        <li>
-          <Link to="/">
-            <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer">
-              Voltar ao Menu
-            </button>
-          </Link>
-        </li>
       </Navbar>
 
       <div className="flex-1 bg-gray-50">
         <div className="flex items-center justify-center bg-gray-200 py-10 px-4 min-h-screen">
           <div ref={downloadRef} className=" bg-white w-[794px] min-h-[1123px] p-25">
-            <Header/>
+            <Header />
 
             {/* Conteúdo */}
             <div className="text-justify font-serif text-xl space-y-4">
