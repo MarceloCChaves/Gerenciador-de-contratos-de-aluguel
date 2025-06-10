@@ -217,19 +217,20 @@ export default function EditorPage() {
         </ToggleSection>
 
         {/* Tooltip Fiador*/}
-        <ToggleSection
+        {tipoGarantia === "fianca" ? 
+         <ToggleSection
           icon={<PersonStanding />}
           label="Fiador"
           show={showFiadorInfo}
           setShow={setShowFiadorInfo}
-        >
+         >
           <Input
             type="text"
             label="Fiador"
             value={nomeFiador}
             onChange={(e) => setNomeFiador(e.target.value)}
           />
-        </ToggleSection>
+        </ToggleSection> : <></>}
 
         {/* Tooltip Locatário */}
         <ToggleSection

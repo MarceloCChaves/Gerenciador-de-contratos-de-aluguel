@@ -1,28 +1,24 @@
 import { Link } from 'react-router-dom';
-import ContratoCard from '../contrato-card/Contato-card'
+import ContratoCard from '../../components/contrato-card/Contato-card'
+import { useEffect, useState } from 'react';
+import API from '../../api/api';
+import type IContratoProps from '../../interfaces/IContratoProps';
 
-const mockContratos = [
-  {
-    id: 1,
-    titulo: 'Contrato de Aluguel - João Silva',
-    data: '10/05/2024',
-    status: 'Ativo',
-  },
-  {
-    id: 2,
-    titulo: 'Contrato de Aluguel - Maria Oliveira',
-    data: '22/03/2024',
-    status: 'Encerrado',
-  },
-  {
-    id: 3,
-    titulo: 'Contrato de Aluguel - Empresa XYZ',
-    data: '02/06/2023',
-    status: 'Ativo',
-  },
-];
 
 export default function Menu() {
+  const [contratos, setContratos] = useState<IContratoProps[]>([]);
+
+  useEffect(() => {
+  API.get("/contratos")
+    .then((res) => {
+      setContratos(res.data.data);
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
+}, []);
+
+
   const handleEditar = (id: number) => {
     alert(`Editar contrato ID: ${id}`);
   };
@@ -48,12 +44,12 @@ export default function Menu() {
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">Contratos Recentes</h2>
 
         <div className="flex flex-col gap-4">
-          {mockContratos.map((contrato) => (
+          {contratos.map((contrato) => (
             <ContratoCard
               key={contrato.id}
               {...contrato}
-              onEditar={handleEditar}
-              onExcluir={handleExcluir}
+              onEditar={() => handleEditar(contrato.id)}
+              onExcluir={() => handleExcluir(contrato.id)}
             />
           ))}
         </div>
